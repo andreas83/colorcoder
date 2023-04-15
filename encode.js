@@ -1,44 +1,64 @@
-var clc = require("cli-color");
+// Description: Encode a string to a matrix of colors and save the result as an image
+
+const input = "This string will be encoded to a matrix of colors and then decoded back to the original string.";
+const dstFile = "screenshot/final.png";
 
 
-const input="This string will be encoded to a matrix of colors and then decoded back to the original string.";
+//dimension of the pixel inside the matrix (also need to be changed in decode.js)
+const tileSizeH = 5;
+const tileSizeW = 5;
+const rows = 15;
 
-console.log(input);
-process.stdout.write(clc.move.down(2));
-process.stdout.write(clc.move.lineBegin);
 
-const encode=new TextEncoder().encode(input);
+const hexToRgb = require('./lib/hexToRgb');
+const colorMatrix = require("cli-color/lib/xterm-colors");
+const sharp = require('sharp');
+const encode = new TextEncoder().encode(input);
 
-const encode3 = encode.reduce((acc, cur, i) => {
-    if (i % 12 == 0) acc.push([]);
-    acc[acc.length - 1].push(cur);
+//split the array into chunks (see rows)
+const chunks = encode.reduce((acc, cur, i) => {
+    if (i % rows == 0) acc.push([]); 
+    acc[acc.length - 1].push(cur); 
     return acc;
 }, []);
 
-encode3.forEach(element => {
+//create the empty image
+const image = sharp({
+    create: {
+        width: tileSizeW * rows,
+        height: chunks.length * tileSizeH,
+        channels: 4,
+        background: { r: 0, g: 0, b: 0, alpha: 0 }
+    }
+}).png();
 
-    element.forEach((e,i)=>{
-        var msg=clc.xterm(e).bgXterm(0);
-        element[i]=msg("████");
+var top = 0;
+var left = 0;
+
+const composite = [];
+chunks.forEach(element => {
+
+    element.forEach((e, i) => {
+        console.log(hexToRgb(colorMatrix[e]), left, top)
+
+        composite.push(
+            {
+                input: { create: { width: tileSizeW, height: tileSizeH, channels: 4, background: hexToRgb(colorMatrix[e]) } },
+                left: left,
+                top: top
+            }
+        );
+        left = left + tileSizeW;
     });
-    
-    process.stdout.write(
-    clc.columns([
-      element
-      
-    ])
-  );
-  
+
+    top = top + tileSizeH;
+    left = 0;
+
 });
-process.stdout.write(clc.move.down(2));
 
-process.stdout.write(encode.toString());
 
-//decode
-const decodedString = encode.toString().split(",").map((x) => String.fromCharCode(x)).join("");
-process.stdout.write(clc.move.down(2));
-process.stdout.write(clc.move.lineBegin);
+image.composite(composite);
 
-process.stdout.write(decodedString.toString());
-process.stdout.write(clc.move.down(2));
-process.stdout.write(clc.move.lineBegin);
+image.toFile(dstFile).then((info) => {
+    console.log(info)
+});
