@@ -25,19 +25,7 @@ Finally, the rows of squares are composited together using the sharp library, an
 
 # How to Use
 
-To encode a string into a matrix of colors, simply modify the input variable in the code to contain the desired string. 
-Then, run the code using a JavaScript runtime environment such as Node.js. The resulting image will be saved to the file specified by the dstFile variable.
-
-Here is an example of encoding the string "Hello, world!" using the default settings:
-
-```
-const input = "Hello, world!";
-const dstFile = "output.png";
-const tileSizeH = 5;
-const tileSizeW = 5;
-const rows = 15;
-```
-
+To encode a text into a image simply give encode.js two parameters (filename and string)
 The resulting image will look like this:
 
 ![data matrix](https://raw.githubusercontent.com/andreas83/colorcoder/main/screenshot/final.png)
