@@ -8,8 +8,13 @@
   },
   "author": "Andreas Beder",
   "license": "ISC",
+  "scripts": {
+    "test": "mocha"
+  },
   "dependencies": {
+    "chai": "^4.3.7",
     "cli-color": "^2.0.3",
+    "mocha": "^10.2.0",
     "sharp": "^0.32.0"
   }
 }

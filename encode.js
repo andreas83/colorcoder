@@ -1,64 +1,26 @@
-// Description: Encode a string to a matrix of colors and save the result as an image
-
-const input = "This string will be encoded to a matrix of colors and then decoded back to the original string.";
-const dstFile = "screenshot/final.png";
+const encodeImage = require('./lib/encode.js');
+const fs = require('fs');
 
 
-//dimension of the pixel inside the matrix (also need to be changed in decode.js)
-const tileSizeH = 5;
-const tileSizeW = 5;
-const rows = 15;
+//check if file exists
+if (process.argv.length < 3) {
+    console.log("Please provide a file name");
+    return;
+}
+if(!fs.existsSync(process.argv[2])){
+    console.log("File does not exist");
+    return;
+}
+
+if (process.argv.length < 4) {
+    console.log("Please provide a text to encode");
+    return;
+}
 
 
-const hexToRgb = require('./lib/hexToRgb');
-const colorMatrix = require("cli-color/lib/xterm-colors");
-const sharp = require('sharp');
-const encode = new TextEncoder().encode(input);
+const filename=process.argv[2];
+const text=process.argv[3];
 
-//split the array into chunks (see rows)
-const chunks = encode.reduce((acc, cur, i) => {
-    if (i % rows == 0) acc.push([]); 
-    acc[acc.length - 1].push(cur); 
-    return acc;
-}, []);
-
-//create the empty image
-const image = sharp({
-    create: {
-        width: tileSizeW * rows,
-        height: chunks.length * tileSizeH,
-        channels: 4,
-        background: { r: 0, g: 0, b: 0, alpha: 0 }
-    }
-}).png();
-
-var top = 0;
-var left = 0;
-
-const composite = [];
-chunks.forEach(element => {
-
-    element.forEach((e, i) => {
-        console.log(hexToRgb(colorMatrix[e]), left, top)
-
-        composite.push(
-            {
-                input: { create: { width: tileSizeW, height: tileSizeH, channels: 4, background: hexToRgb(colorMatrix[e]) } },
-                left: left,
-                top: top
-            }
-        );
-        left = left + tileSizeW;
-    });
-
-    top = top + tileSizeH;
-    left = 0;
-
-});
-
-
-image.composite(composite);
-
-image.toFile(dstFile).then((info) => {
-    console.log(info)
+encodeImage(text, 11, 15, 15, filename).then(function (result) {
+    console.log(result);
 });
