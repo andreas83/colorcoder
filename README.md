@@ -8,9 +8,9 @@ colorcoder is a experimental endcoder / decoder
 
 
 ```
-node encode.js // encodes a string into an image - color data matrix (screenshot/final.png)
-node decode.js // decodes the color matrix back to a string
-node encode-cli.js //mainly for debuging
+node encode.js test.png "This is just a test" // encodes a string into an image 
+node decode.js test.png // decodes the image back to text
+
 ```
 
 demo:
