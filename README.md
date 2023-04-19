@@ -37,7 +37,15 @@ node decode.js test.png // decodes the image back to text
 
 ```
 
-demo:
+
+# Demo
+
+[Online Demo https://codejungle.org/ ](https://codejungle.org/)
+Web version is only for encoding, for decoding please use cli
+
+
+# Deprecated 
+this cli version is not available anymore
 
 ![a demo of a text encooded into a color matrix](https://github.com/andreas83/colorcoder/raw/main/screenshot/example.png)
 
